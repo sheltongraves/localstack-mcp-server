@@ -127,7 +127,6 @@ function parseTestOutput(output: string): ParsedTestOutput {
   }
 
   // Detect service involvement
-  const lowerOutput = output.toLowerCase();
   const involvesSqs = /sqs|queue|receive_message|send_message/i.test(output);
   const involvesEventBridge = /eventbridge|event.?bridge|put_events|event.?bus|event.?rule/i.test(
     output
@@ -143,8 +142,16 @@ function parseTestOutput(output: string): ParsedTestOutput {
 
   // Extract event bus names
   const eventBusNames: string[] = [];
-  const busMatches = output.matchAll(/(?:event.?bus|EventBusName)['":\s]*['"]?([a-zA-Z0-9_-]+)/gi);
-  for (const m of busMatches) eventBusNames.push(m[1]);
+  const busMatches = output.matchAll(
+    /(?:EventBusName|event[_-]?bus(?:_?name)?)['":\s=]+['"]?([a-zA-Z0-9_-]+)/gi
+  );
+  for (const m of busMatches) {
+    // Filter out property key fragments that aren't real bus names
+    const name = m[1];
+    if (name && !/^(?:name|Name|url|arn)$/i.test(name)) {
+      eventBusNames.push(name);
+    }
+  }
 
   // Try to extract expected vs actual message counts
   let expectedMessages: number | null = null;
