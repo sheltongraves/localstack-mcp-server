@@ -62,6 +62,18 @@
     {
       "name": "localstack-docs",
       "description": "Search the LocalStack documentation to find guides, API references, and configuration details"
+    },
+    {
+      "name": "localstack-inspect-event-routing",
+      "description": "Inspects EventBridge event routing: lists buses, rules, targets, and traces whether a specific event would match any rules or silently fail"
+    },
+    {
+      "name": "localstack-diagnose-failure",
+      "description": "Diagnoses integration test failures by analyzing test output, inspecting LocalStack resource state, and tracing event flows to identify root causes"
+    },
+    {
+      "name": "localstack-resource-diff",
+      "description": "Compares expected vs actual AWS resource state in LocalStack to catch configuration drift and missing resources"
     }
   ],
   "prompts": [
@@ -160,6 +172,24 @@
       "description": "Search LocalStack documentation",
       "arguments": ["query"],
       "text": "Search the LocalStack documentation for: ${arguments.query}"
+    },
+    {
+      "name": "inspect-event-routing",
+      "description": "Trace EventBridge event routing to detect silent failures",
+      "arguments": ["bus_name", "source"],
+      "text": "Inspect event routing on bus '${arguments.bus_name}' for events with source '${arguments.source}'. Show me if events would be routed or silently dropped."
+    },
+    {
+      "name": "diagnose-test-failure",
+      "description": "Diagnose a failing integration test",
+      "arguments": ["test_output"],
+      "text": "Diagnose this integration test failure and identify the root cause:\n${arguments.test_output}"
+    },
+    {
+      "name": "resource-diff",
+      "description": "Compare expected vs actual resource state in LocalStack",
+      "arguments": ["service"],
+      "text": "Show me all ${arguments.service} resources in LocalStack and their current state."
     }
   ],
   "keywords": ["localstack", "aws", "cloud", "cloud-dev", "cloud-testing"],
